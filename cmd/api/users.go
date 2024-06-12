@@ -10,7 +10,7 @@ import (
 
 func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
-		UnitID      int       `json:"unit_id" db:"unit_id"`
+		UserId      int       `json:"unit_id" db:"unit_id"`
 		BuildingID  string    `json:"building_id" db:"building_id"`
 		OwnerID     int       `json:"owner_id" db:"owner_id"`
 		Title       string    `json:"title" db:"title"`
