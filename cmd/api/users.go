@@ -2,23 +2,22 @@ package main
 
 import (
 	"fmt"
+	"github.com/sherpaurgen/argus/internal/validator"
 	"net/http"
 	"time"
 
-	"github.com/sherpaurgen/Tilicho_v1/internal/data"
+	"github.com/sherpaurgen/argus/internal/data"
 )
 
 func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
-		UserId      int       `json:"unit_id" db:"unit_id"`
-		BuildingID  string    `json:"building_id" db:"building_id"`
-		OwnerID     int       `json:"owner_id" db:"owner_id"`
-		Title       string    `json:"title" db:"title"`
-		Description string    `json:"description" db:"description"`
-		FloorNumber int       `json:"floor_number" db:"floor_number"`
-		PricePerDay float64   `json:"price_per_day,omitempty" db:"price_per_day"`
-		CreatedAt   time.Time `json:"created_at" db:"created_at"`
-		Features    []string  `json:"generes"`
+		UserID    string    `json:"user_id" db:"user_id"`
+		UserGroup string    `json:"group_id" db:"group_id"`
+		Email     string    `json:"email" db:"email"`
+		FirstName string    `json:"fname" db:"fname"`
+		LastName  string    `json:"lname" db:"lname"`
+		Secret    string    `json:"secret" db:"secret"`
+		CreatedAt time.Time `json:"created_at" db:"created_at"`
 	}
 
 	//err := json.NewDecoder(r.Body).Decode(&input)
@@ -28,26 +27,34 @@ func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request
 		//app.errorResponse(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
+	v := validator.New()
+	v.Check(input.Email != "", "email", "must be provided")
+	v.Check(input.Secret != "", "secret", "must be provided")
+	v.Check(input.FirstName != "", "firstname", "must be provided")
+	v.Check(input.LastName != "", "lastname", "must be provided")
+	if !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+	}
+	// %+v will also print key and values
 	fmt.Fprintf(w, "%+v\n", input)
 }
 
 func (app *application) getUnitHandler(w http.ResponseWriter, r *http.Request) {
-	unitid, err := app.readIDParam(r)
+	userid, err := app.readIDParam(r)
 	if err != nil {
 		app.notFoundResponse(w, r)
 		return
 	}
-	unit := data.Unit{
-		UnitID:      int(unitid),
-		BuildingID:  "B17",
-		OwnerID:     int(unitid),
-		Title:       "titelsdf",
-		Description: "asdf",
-		FloorNumber: 123,
-		PricePerDay: 232,
-		CreatedAt:   time.Now(),
+	user := data.Users{
+		UserID:    userid,
+		UserGroup: "usr100",
+		Email:     "usr100@example.com",
+		FirstName: "bob",
+		LastName:  "rolling",
+		Secret:    "swolxo@los23",
+		CreatedAt: time.Now(),
 	}
-	err = app.writeJSON(w, http.StatusOK, envelope{"unit": unit}, nil)
+	err = app.writeJSON(w, http.StatusOK, envelope{"user": user}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}

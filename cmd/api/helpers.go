@@ -4,21 +4,19 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/go-chi/chi/v5"
 	"io"
 	"net/http"
-	"strconv"
-
-	"github.com/go-chi/chi/v5"
 )
 
 type envelope map[string]any
 
-func (app *application) readIDParam(r *http.Request) (int64, error) {
-	id_parameter := chi.URLParam(r, "id")
-	id, err := strconv.ParseInt(id_parameter, 10, 64)
-	if err != nil {
-		return 0, err
-	}
+func (app *application) readIDParam(r *http.Request) (string, error) {
+	id := chi.URLParam(r, "id")
+	//id, err := strconv.ParseInt(id_parameter, 10, 64)
+	//if err != nil {
+	//	return 0, err
+	//}
 	app.logger.Printf("Error parsing id from url: %v", id)
 	return id, nil
 }
