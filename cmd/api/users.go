@@ -28,10 +28,10 @@ func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 	v := validator.New()
-	v.Check(input.Email != "", "email", "must be provided")
-	v.Check(input.Secret != "", "secret", "must be provided")
-	v.Check(input.FirstName != "", "firstname", "must be provided")
-	v.Check(input.LastName != "", "lastname", "must be provided")
+	v.Check(input.Email == "", "email", "must be provided")
+	v.Check(input.Secret == "", "secret", "must be provided")
+	v.Check(input.FirstName == "", "firstname", "must be provided")
+	v.Check(input.LastName == "", "lastname", "must be provided")
 	if !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 	}
