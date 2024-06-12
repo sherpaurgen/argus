@@ -11,8 +11,8 @@ func (app *application) routes() *chi.Mux {
 	router.Use(middleware.Logger)
 	// Routes
 	router.Get("/v1/healthcheck", app.healthcheckHandler)
-	router.Post("/v1/units", app.createUnitHandler)
-	router.Get("/v1/units/{id}", app.getUnitHandler)
+	router.Post("/v1/users", app.createUserHandler)
+	router.Get("/v1/users/{id}", app.getUnitHandler)
 	router.NotFound(app.notFoundResponse)
 	return router
 }

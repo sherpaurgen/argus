@@ -8,7 +8,7 @@ import (
 	"github.com/sherpaurgen/Tilicho_v1/internal/data"
 )
 
-func (app *application) createUnitHandler(w http.ResponseWriter, r *http.Request) {
+func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		UnitID      int       `json:"unit_id" db:"unit_id"`
 		BuildingID  string    `json:"building_id" db:"building_id"`
