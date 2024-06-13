@@ -1,6 +1,9 @@
 package validator
 
-import "regexp"
+import (
+	"log"
+	"regexp"
+)
 
 var (
 	EmailRX = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\. [a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
@@ -19,12 +22,17 @@ func (v *Validator) Valid() bool {
 }
 
 func (v *Validator) AddError(key, message string) {
-	if _, exists := v.Errors[key]; !exists {
+	//if _, exists := v.Errors[key]; !exists {
+	//	v.Errors[key] = message
+	//}
+	_, exists := v.Errors[key] //check if key exist in v.errors map , the vlaue is ignored using "_"
+	if !exists {
 		v.Errors[key] = message
 	}
 }
 
 func (v *Validator) Check(ok bool, key, message string) {
+	log.Printf("%v got bool %v", key, ok)
 	if !ok {
 		v.AddError(key, message)
 	}
