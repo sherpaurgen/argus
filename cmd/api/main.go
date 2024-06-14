@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	_ "github.com/lib/pq"
+	"github.com/sherpaurgen/argus/internal/data"
 	"log"
 	"net/http"
 	"os"
@@ -28,6 +29,7 @@ type config struct {
 type application struct {
 	config config
 	logger *log.Logger
+	models data.Models
 }
 
 func main() {
@@ -41,15 +43,17 @@ func main() {
 	flag.Parse()
 	//initialize logger, the prefix is empty hence its just empty quote ""
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
-	app := &application{
-		config: cfg,
-		logger: logger,
-	}
 	db, err := OpenDB(cfg)
 	if err != nil {
 		log.Panicf("Error on db connection: %v", err)
 	}
 	defer db.Close()
+
+	app := &application{
+		config: cfg,
+		logger: logger,
+		models: data.NewModels(db),
+	}
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%d", cfg.port),
