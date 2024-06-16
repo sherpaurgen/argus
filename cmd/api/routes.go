@@ -12,7 +12,7 @@ func (app *application) routes() *chi.Mux {
 	// Routes
 	router.Get("/v1/healthcheck", app.healthcheckHandler)
 	router.Post("/v1/users", app.createUserHandler)
-	router.Get("/v1/users/{id}", app.getUnitHandler)
+	router.Get("/v1/users/{id}", app.getUserHandler)
 	router.NotFound(app.notFoundResponse)
 	return router
 }

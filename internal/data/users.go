@@ -2,6 +2,8 @@ package data
 
 import (
 	"database/sql"
+	"errors"
+	"log"
 	"time"
 
 	"github.com/segmentio/ksuid"
@@ -34,7 +36,32 @@ func (m UserModel) Insert(u *Users) error {
 }
 
 func (m UserModel) Get(user_id string) (*Users, error) {
-	return nil, nil
+	query := `
+	SELECT user_id,fname,lname,email,password_hash,created_at,updated_at,last_login 
+	FROM users 
+	WHERE user_id = $1`
+	var usr Users
+	log.Println("the user_id received:", user_id)
+	err := m.DB.QueryRow(query, user_id).Scan(
+		&usr.UserID,
+		&usr.FirstName,
+		&usr.LastName,
+		&usr.Email,
+		&usr.PasswordHash,
+		&usr.CreatedAt,
+		&usr.UpdatedAt,
+		&usr.LastLogin,
+	)
+	log.Println(usr)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, ErrRecordNotFound
+		default:
+			return nil, err
+		}
+	}
+	return &usr, nil
 }
 
 func (m UserModel) Update(u *Users) error {

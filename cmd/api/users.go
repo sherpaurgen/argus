@@ -50,7 +50,7 @@ func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request
 		UpdatedAt:    input.CreatedAt,
 		LastLogin:    input.LastLogin,
 	}
-	err = app.models.UserOb.Insert(usr)
+	err = app.models.UserModel.Insert(usr)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
@@ -65,23 +65,21 @@ func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request
 
 }
 
-func (app *application) getUnitHandler(w http.ResponseWriter, r *http.Request) {
-	userid, err := app.readIDParam(r)
+func (app *application) getUserHandler(w http.ResponseWriter, r *http.Request) {
+	user_id, err := app.readIDParam(r)
 	if err != nil {
 		app.notFoundResponse(w, r)
 		return
 	}
-	user := data.Users{
-		UserID:       userid,
-		UserGroup:    "usr100",
-		Email:        "usr100@example.com",
-		FirstName:    "bob",
-		LastName:     "rolling",
-		PasswordHash: "swolxo@los23",
-		CreatedAt:    time.Now(),
+	usr, err := app.models.UserModel.Get(user_id)
+
+	if err != nil {
+		app.notFoundResponse(w, r)
+		return
 	}
-	err = app.writeJSON(w, http.StatusOK, envelope{"user": user}, nil)
+	err = app.writeJSON(w, http.StatusOK, envelope{"user": usr}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
+
 }

@@ -15,7 +15,7 @@ var (
 // like a UserModel and PermissionMode.
 type Models struct {
 	ChildrenOb ChildModel
-	UserOb     UserModel
+	UserModel  UserModel
 	Users      interface {
 		Insert(movie *Users) error
 		Get(user_id string) (*Users, error)
@@ -30,7 +30,7 @@ func NewModels(db *sql.DB) Models {
 	return Models{
 		ChildrenOb: ChildModel{
 			DB: db},
-		UserOb: UserModel{
+		UserModel: UserModel{
 			DB: db,
 		},
 	}

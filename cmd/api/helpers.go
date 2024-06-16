@@ -4,21 +4,22 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/go-chi/chi/v5"
 	"io"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type envelope map[string]any
 
 func (app *application) readIDParam(r *http.Request) (string, error) {
-	id := chi.URLParam(r, "id")
+	user_id := chi.URLParam(r, "id")
 	//id, err := strconv.ParseInt(id_parameter, 10, 64)
 	//if err != nil {
 	//	return 0, err
 	//}
-	app.logger.Printf("Error parsing id from url: %v", id)
-	return id, nil
+	app.logger.Printf("Error parsing id from url: %v", user_id)
+	return user_id, nil
 }
 
 // here "any" is equivalent to interface{} is used to accept any type of data
