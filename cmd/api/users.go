@@ -83,3 +83,50 @@ func (app *application) getUserHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request) {
+	user_id, err := app.readIDParam(r)
+	if err != nil {
+		app.notFoundResponse(w, r)
+		return
+	}
+	usr, err := app.models.UserModel.Get(user_id)
+	if err != nil {
+		app.notFoundResponse(w, r)
+		return
+	}
+	var input struct {
+		UserID    string `json:"user_id" db:"user_id"`
+		UserGroup string `json:"group_id" db:"group_id"`
+		Email     string `json:"email" db:"email"`
+		FirstName string `json:"fname" db:"fname"`
+		LastName  string `json:"lname" db:"lname"`
+	}
+	err = app.readJSON(w, r, &input)
+	if err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+	usr.UserID = input.UserID
+	usr.FirstName = input.FirstName
+	usr.LastName = input.LastName
+	usr.Email = input.Email
+
+	v := validator.New()
+
+	v.Check(input.Email != "", "email", "must be provided")
+	v.Check(input.FirstName != "", "firstname", "must be provided")
+	v.Check(input.LastName != "", "lastname", "must be provided")
+	if !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+	}
+	err = app.models.UserModel.Update(usr)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+	err = app.writeJSON(w, http.StatusOK, envelope{"user": usr}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
+
+}

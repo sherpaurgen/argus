@@ -12,6 +12,7 @@ import (
 type UserModel struct {
 	DB *sql.DB
 }
+
 type Users struct {
 	UserID       string    `json:"user_id" db:"user_id"`
 	UserGroup    string    `json:"group_id" db:"group_id"`
@@ -65,7 +66,18 @@ func (m UserModel) Get(user_id string) (*Users, error) {
 }
 
 func (m UserModel) Update(u *Users) error {
-	return nil
+
+	query := `UPDATE users
+	SET fname=$1,lname=$2,email=$3 
+	WHERE user_id = $4
+	`
+	var updatedUser Users
+
+	// if err != nil {
+	// 	return err
+	// }
+	// return nil
+	return m.DB.QueryRow(query, u.FirstName, u.LastName, u.Email, u.UserID).Scan(&updatedUser.UserID, &updatedUser.FirstName, &updatedUser.LastName, &updatedUser.Email)
 }
 
 func (m UserModel) Delete(user_id string) error {
