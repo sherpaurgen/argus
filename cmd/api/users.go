@@ -85,12 +85,12 @@ func (app *application) getUserHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request) {
-	user_id, err := app.readIDParam(r)
+	user_id, err := app.readIDParam(r) //get the user id from url
 	if err != nil {
 		app.notFoundResponse(w, r)
 		return
 	}
-	usr, err := app.models.UserModel.Get(user_id)
+	usr, err := app.models.UserModel.Get(user_id) //fetching 1 matched user from db
 	if err != nil {
 		app.notFoundResponse(w, r)
 		return
@@ -105,7 +105,10 @@ func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request
 		app.badRequestResponse(w, r, err)
 		return
 	}
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5119211 (feature: fix minor typos)
 	usr.UserID = user_id
 	usr.FirstName = input.FirstName
 	usr.LastName = input.LastName
@@ -121,11 +124,11 @@ func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request
 	}
 	err = app.models.UserModel.Update(usr)
 	if err != nil {
+		app.logger.Printf("data.update: throws error %v", err)
 		app.serverErrorResponse(w, r, err)
 	}
 	err = app.writeJSON(w, http.StatusOK, envelope{"user": "updateduser"}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
-
 }

@@ -43,7 +43,6 @@ func (m UserModel) Get(user_id string) (*Users, error) {
 	FROM users 
 	WHERE user_id = $1`
 	var usr Users
-	log.Println("the user_id received:", user_id)
 	err := m.DB.QueryRow(query, user_id).Scan(
 		&usr.UserID,
 		&usr.FirstName,
@@ -67,6 +66,7 @@ func (m UserModel) Get(user_id string) (*Users, error) {
 }
 
 func (m UserModel) Update(u *Users) error {
+<<<<<<< HEAD
 	query := `UPDATE users
 	SET fname=$1, lname=$2, email=$3 
 	WHERE user_id = $4 `
@@ -91,6 +91,29 @@ func (m UserModel) Update(u *Users) error {
 	}
 
 	return nil
+=======
+
+	query := `
+		UPDATE users
+		SET fname=$1, lname=$2, email=$3
+		WHERE user_id=$4
+		RETURNING user_id, fname, lname, email
+	`
+
+	var updatedUser Users
+	err := m.DB.QueryRow(query, u.FirstName, u.LastName, u.Email, u.UserID).Scan(&updatedUser.UserID, &updatedUser.FirstName, &updatedUser.LastName, &updatedUser.Email)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return err
+		}
+		return err
+	}
+
+	fmt.Printf("data.Update: User updated successfully: %+v\n", updatedUser)
+	return nil
+
+>>>>>>> 5119211 (feature: fix minor typos)
 }
 
 func (m UserModel) Delete(user_id string) error {

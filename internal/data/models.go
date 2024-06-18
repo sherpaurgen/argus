@@ -14,9 +14,9 @@ var (
 // Create a Models struct which wraps other models,
 // like a UserModel and PermissionMode.
 type Models struct {
-	ChildrenOb ChildModel
-	UserModel  UserModel
-	Users      interface {
+	ChildrenModel ChildModel
+	UserModel     UserModel
+	Users         interface {
 		Insert(movie *Users) error
 		Get(user_id string) (*Users, error)
 		Update(movie *Users) error
@@ -28,7 +28,7 @@ type Models struct {
 // the initialized ChildrenModel.
 func NewModels(db *sql.DB) Models {
 	return Models{
-		ChildrenOb: ChildModel{
+		ChildrenModel: ChildModel{
 			DB: db},
 		UserModel: UserModel{
 			DB: db,
