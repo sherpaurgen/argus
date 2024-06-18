@@ -96,8 +96,6 @@ func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 	var input struct {
-		UserID    string `json:"user_id" db:"user_id"`
-		UserGroup string `json:"group_id" db:"group_id"`
 		Email     string `json:"email" db:"email"`
 		FirstName string `json:"fname" db:"fname"`
 		LastName  string `json:"lname" db:"lname"`
@@ -107,7 +105,8 @@ func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request
 		app.badRequestResponse(w, r, err)
 		return
 	}
-	usr.UserID = input.UserID
+
+	usr.UserID = user_id
 	usr.FirstName = input.FirstName
 	usr.LastName = input.LastName
 	usr.Email = input.Email
@@ -124,7 +123,7 @@ func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
-	err = app.writeJSON(w, http.StatusOK, envelope{"user": usr}, nil)
+	err = app.writeJSON(w, http.StatusOK, envelope{"user": "updateduser"}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
