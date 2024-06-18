@@ -66,32 +66,6 @@ func (m UserModel) Get(user_id string) (*Users, error) {
 }
 
 func (m UserModel) Update(u *Users) error {
-<<<<<<< HEAD
-	query := `UPDATE users
-	SET fname=$1, lname=$2, email=$3 
-	WHERE user_id = $4 `
-
-	// Log the query and parameters
-	log.Printf("Executing query: %s with params: %s, %s, %s, %s", query, u.FirstName, u.LastName, u.Email, u.UserID)
-	fmt.Println("userid--->", u.UserID)
-
-	res, err := m.DB.Exec(query, u.FirstName, u.LastName, u.Email, u.UserID)
-	if err != nil {
-		return err
-	}
-
-	// Check the number of affected rows
-	rowsAffected, err := res.RowsAffected()
-	if err != nil {
-		return err
-	}
-
-	if rowsAffected == 0 {
-		return errors.New("no rows were updated")
-	}
-
-	return nil
-=======
 
 	query := `
 		UPDATE users
@@ -113,7 +87,6 @@ func (m UserModel) Update(u *Users) error {
 	fmt.Printf("data.Update: User updated successfully: %+v\n", updatedUser)
 	return nil
 
->>>>>>> 5119211 (feature: fix minor typos)
 }
 
 func (m UserModel) Delete(user_id string) error {

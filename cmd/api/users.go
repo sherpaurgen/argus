@@ -105,10 +105,6 @@ func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request
 		app.badRequestResponse(w, r, err)
 		return
 	}
-<<<<<<< HEAD
-
-=======
->>>>>>> 5119211 (feature: fix minor typos)
 	usr.UserID = user_id
 	usr.FirstName = input.FirstName
 	usr.LastName = input.LastName
