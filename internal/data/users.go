@@ -3,7 +3,6 @@ package data
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"log"
 	"time"
 
@@ -84,13 +83,28 @@ func (m UserModel) Update(u *Users) error {
 		return err
 	}
 
-	fmt.Printf("data.Update: User updated successfully: %+v\n", updatedUser)
+	//fmt.Printf("data.Update: User updated successfully: %+v\n", updatedUser)
 	return nil
 
 }
 
 func (m UserModel) Delete(user_id string) error {
+	query := `
+	DELETE FROM users WHERE user_id = $1
+	`
+	result, err := m.DB.Exec(query, user_id)
+	if err != nil {
+		return err
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return ErrRecordNotFound
+	}
 	return nil
+
 }
 
 type MockUserModel struct{}
