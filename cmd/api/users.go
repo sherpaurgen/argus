@@ -121,9 +121,9 @@ func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 	var input struct {
-		Email     string `json:"email" db:"email"`
-		FirstName string `json:"fname" db:"fname"`
-		LastName  string `json:"lname" db:"lname"`
+		Email     *string `json:"email" db:"email"`
+		FirstName *string `json:"fname" db:"fname"`
+		LastName  *string `json:"lname" db:"lname"`
 	}
 	err = app.readJSON(w, r, &input)
 	if err != nil {
@@ -131,17 +131,25 @@ func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 	usr.UserID = user_id
-	usr.FirstName = input.FirstName
-	usr.LastName = input.LastName
-	usr.Email = input.Email
+	if input.Email != nil {
+		usr.Email = *input.Email
+	}
+	if input.FirstName != nil {
+		usr.LastName = *input.LastName
+	}
+
+	if input.LastName != nil {
+		usr.LastName = *input.LastName
+	}
 
 	v := validator.New()
 
-	v.Check(input.Email != "", "email", "must be provided")
-	v.Check(input.FirstName != "", "firstname", "must be provided")
-	v.Check(input.LastName != "", "lastname", "must be provided")
+	v.Check(usr.Email != "", "email", "must be provided")
+	v.Check(usr.FirstName != "", "firstname", "must be provided")
+	v.Check(usr.LastName != "", "lastname", "must be provided")
 	if !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
+		return
 	}
 	err = app.models.UserModel.Update(usr)
 	if err != nil {
