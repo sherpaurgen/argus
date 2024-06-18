@@ -18,7 +18,7 @@ func (app *application) readIDParam(r *http.Request) (string, error) {
 	//if err != nil {
 	//	return 0, err
 	//}
-	app.logger.Printf("Error parsing id from url: %v", user_id)
+	//app.logger.Printf("Error parsing id from url: %v", user_id)
 	return user_id, nil
 }
 
