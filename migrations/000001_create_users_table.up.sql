@@ -19,17 +19,19 @@ CREATE TABLE children (
 );
 
 CREATE TABLE sleep_patterns (
+                                
                                 sleep_id char(27) PRIMARY KEY,
                                 child_id char(27) REFERENCES children(child_id),
                                 sleep_start TIMESTAMP WITH TIME ZONE NOT NULL,
                                 sleep_end TIMESTAMP WITH TIME ZONE NOT NULL,
-                                sleep_quality INTEGER CHECK (sleep_quality BETWEEN 1 AND 5)
+                                sleep_quality INTEGER CHECK (sleep_quality BETWEEN 1 AND 5),
+                                device_id char(27)
 );
 
 CREATE TABLE temperature_readings (
                                       id char(27) PRIMARY KEY,
                                       child_id char(27) REFERENCES children(child_id),
-                                      sensor_id char(27),
+                                      device_id char(27),
                                       timestamp TIMESTAMP WITH TIME ZONE,
                                       temperature DECIMAL(5,2)
 );

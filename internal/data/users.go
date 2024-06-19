@@ -1,6 +1,7 @@
 package data
 
 import (
+	"context"
 	"database/sql"
 	"errors"
 	"log"
@@ -27,9 +28,11 @@ type Users struct {
 
 func (m UserModel) Insert(u *Users) error {
 	user_id := ksuid.New()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	query := `INSERT INTO users ( user_id,fname,lname,email,password_hash,created_at,updated_at,last_login) VALUES 
 	( $1,$2,$3,$4,$5,$6,$7,$8 )`
-	_, err := m.DB.Exec(query, user_id.String(), u.FirstName, u.LastName, u.Email, u.PasswordHash, time.Now(), time.Now(), time.Now())
+	_, err := m.DB.ExecContext(ctx, query, user_id.String(), u.FirstName, u.LastName, u.Email, u.PasswordHash, time.Now(), time.Now(), time.Now())
 	if err != nil {
 		return err
 	}
@@ -42,7 +45,9 @@ func (m UserModel) Get(user_id string) (*Users, error) {
 	FROM users 
 	WHERE user_id = $1`
 	var usr Users
-	err := m.DB.QueryRow(query, user_id).Scan(
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	err := m.DB.QueryRowContext(ctx, query, user_id).Scan(
 		&usr.UserID,
 		&usr.FirstName,
 		&usr.LastName,
@@ -74,7 +79,9 @@ func (m UserModel) Update(u *Users) error {
 	`
 
 	var updatedUser Users
-	err := m.DB.QueryRow(query, u.FirstName, u.LastName, u.Email, u.UserID).Scan(&updatedUser.UserID, &updatedUser.FirstName, &updatedUser.LastName, &updatedUser.Email)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	err := m.DB.QueryRowContext(ctx, query, u.FirstName, u.LastName, u.Email, u.UserID).Scan(&updatedUser.UserID, &updatedUser.FirstName, &updatedUser.LastName, &updatedUser.Email)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -92,7 +99,9 @@ func (m UserModel) Delete(user_id string) error {
 	query := `
 	DELETE FROM users WHERE user_id = $1
 	`
-	result, err := m.DB.Exec(query, user_id)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	result, err := m.DB.ExecContext(ctx, query, user_id)
 	if err != nil {
 		return err
 	}
