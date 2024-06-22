@@ -22,6 +22,10 @@ type Models struct {
 		Update(movie *Users) error
 		Delete(user_id string) error
 	}
+	SleepDataModel SleepDataModel
+	SleepData      interface {
+		Insert(sd *SleepData) error
+	}
 }
 
 // For ease of use,this New() method which returns a Models struct containing
@@ -33,6 +37,7 @@ func NewModels(db *sql.DB) Models {
 		UserModel: UserModel{
 			DB: db,
 		},
+		SleepDataModel: SleepDataModel{DB: db},
 	}
 }
 

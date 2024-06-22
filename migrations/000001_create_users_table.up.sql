@@ -3,7 +3,7 @@ CREATE TABLE users (
                        fname varchar(50)  NOT NULL,
                        lname varchar(50)  NOT NULL,
                        email varchar(255) UNIQUE NOT NULL,
-                       secret varchar(255) NOT NULL,
+                       password_hash varchar(255) NOT NULL,
                        created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
                        updated_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
                        last_login timestamp with time zone,
@@ -20,11 +20,12 @@ CREATE TABLE children (
 
 CREATE TABLE sleep_patterns (
                                 
-                                sleep_id char(27) PRIMARY KEY,
+                                sleep_id SERIAL PRIMARY KEY ,
                                 child_id char(27) REFERENCES children(child_id),
+                                user_id char(27) REFERENCES users(user_id), 
                                 sleep_start TIMESTAMP WITH TIME ZONE NOT NULL,
                                 sleep_end TIMESTAMP WITH TIME ZONE NOT NULL,
-                                sleep_quality INTEGER CHECK (sleep_quality BETWEEN 1 AND 5),
+                                sleep_quality INTEGER DEFAULT 5 CHECK (sleep_quality BETWEEN 1 AND 5),
                                 device_id char(27)
 );
 

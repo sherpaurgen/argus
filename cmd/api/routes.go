@@ -28,6 +28,7 @@ func (app *application) routes() *chi.Mux {
 	router.Get("/v1/users/{id}", app.getUserHandler)
 	router.Patch("/v1/users/{id}", app.updateUserHandler)
 	router.Delete("/v1/users/{id}", app.deleteUserHandler)
+	router.Post("/v1/sleepdata/{childid}", app.addsleepdataHandler)
 	router.NotFound(app.notFoundResponse)
 	return router
 }

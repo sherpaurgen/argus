@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -28,6 +29,7 @@ type Users struct {
 
 func (m UserModel) Insert(u *Users) error {
 	user_id := ksuid.New()
+	fmt.Printf("%+v", u)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	query := `INSERT INTO users ( user_id,fname,lname,email,password_hash,created_at,updated_at,last_login) VALUES 

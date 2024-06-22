@@ -7,10 +7,10 @@ type ChildModel struct {
 }
 
 type Child struct {
-	name     string
-	dob      string //yymmdd
-	user_id  string
-	child_id string
+	Name    string
+	Dob     string //yymmdd
+	UserId  string
+	ChildId string
 }
 
 // Add a placeholder method for inserting a new record in the Children table.

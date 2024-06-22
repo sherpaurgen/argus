@@ -43,7 +43,7 @@ func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request
 	usr := &data.Users{
 		UserID:       input.UserID,
 		UserGroup:    input.UserGroup,
-		Email:        input.UserGroup,
+		Email:        input.Email,
 		FirstName:    input.FirstName,
 		LastName:     input.LastName,
 		PasswordHash: input.PasswordHash,
