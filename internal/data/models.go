@@ -3,6 +3,7 @@ package data
 import (
 	"database/sql"
 	"errors"
+	"time"
 )
 
 // Define a custom ErrRecordNotFound error. We'll return this from our Get() method when
@@ -22,6 +23,11 @@ type Models struct {
 		Update(movie *Users) error
 		Delete(user_id string) error
 	}
+	SleepDataModel SleepDataModel
+	SleepData      interface {
+		Insert(sd *SleepData) error
+		GetSleepData(child_id string, user_id string, StartSleep time.Time, EndSleep time.Time, limit int, page int)
+	}
 }
 
 // For ease of use,this New() method which returns a Models struct containing
@@ -33,6 +39,7 @@ func NewModels(db *sql.DB) Models {
 		UserModel: UserModel{
 			DB: db,
 		},
+		SleepDataModel: SleepDataModel{DB: db},
 	}
 }
 
