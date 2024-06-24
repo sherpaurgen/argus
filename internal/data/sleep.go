@@ -97,7 +97,7 @@ func (sdm SleepDataModel) GetSleepData(child_id string, user_id string, StartSle
 		"results":     sleepData,
 		"page":        page,
 		"limit":       limit,
-		"total_count": totalCount,
+		"total_rows":  totalCount,
 		"total_pages": int(math.Ceil(float64(totalCount) / float64(limit))),
 	}
 	return response, nil

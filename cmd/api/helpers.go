@@ -13,13 +13,13 @@ import (
 type envelope map[string]any
 
 func (app *application) readIDParam(r *http.Request) (string, error) {
-	user_id := chi.URLParam(r, "id")
+	id := chi.URLParam(r, "id")
 	//id, err := strconv.ParseInt(id_parameter, 10, 64)
 	//if err != nil {
 	//	return 0, err
 	//}
 	//app.logger.Printf("Error parsing id from url: %v", user_id)
-	return user_id, nil
+	return id, nil
 }
 
 // here "any" is equivalent to interface{} is used to accept any type of data
