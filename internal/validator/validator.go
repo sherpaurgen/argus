@@ -36,7 +36,12 @@ func (v *Validator) Check(ok bool, key, message string) {
 		v.AddError(key, message)
 	}
 }
-
+func (v *Validator) IsTimeEmptyCheck(ok bool, key, message string) {
+	//log.Printf("%v got bool %v", key, ok)
+	if ok {
+		v.AddError(key, message)
+	}
+}
 func PermittedValue[T comparable](value T, permittedValues ...T) bool {
 	for i := range permittedValues {
 		if value == permittedValues[i] {

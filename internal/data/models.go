@@ -3,6 +3,7 @@ package data
 import (
 	"database/sql"
 	"errors"
+	"time"
 )
 
 // Define a custom ErrRecordNotFound error. We'll return this from our Get() method when
@@ -25,6 +26,7 @@ type Models struct {
 	SleepDataModel SleepDataModel
 	SleepData      interface {
 		Insert(sd *SleepData) error
+		GetSleepData(child_id string, user_id string, StartSleep time.Time, EndSleep time.Time, limit int, page int)
 	}
 }
 
