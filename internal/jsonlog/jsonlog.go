@@ -60,7 +60,7 @@ func (l *Logger) print(level Level, message string, properties map[string]string
 	if level < l.minLevel {
 		return 0, nil
 	}
-	aux := struct { //initializing anonymous struct and assigning values below
+	log_entry := struct { //initializing anonymous struct and assigning values below
 		Level      string            `json:"level"`
 		Time       string            `json:"time"`
 		Message    string            `json:"message"`
@@ -73,10 +73,10 @@ func (l *Logger) print(level Level, message string, properties map[string]string
 		Properties: properties,
 	}
 	if level >= LevelError {
-		aux.Trace = string(debug.Stack())
+		log_entry.Trace = string(debug.Stack())
 	}
 	var line []byte
-	line, err := json.Marshal(aux)
+	line, err := json.Marshal(log_entry)
 	if err != nil {
 		line = []byte(LevelError.String() + ": unable to marshal log " + err.Error())
 	}
