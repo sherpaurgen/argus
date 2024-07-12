@@ -61,7 +61,7 @@ func main() {
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%d", cfg.port),
-		Handler:      app.routes(),
+		Handler:      app.recoverPanic(app.rateLimit(app.routes())),
 		IdleTimeout:  time.Minute,
 		ErrorLog:     log.New(logger, "", 0),
 		ReadTimeout:  10 * time.Second,
