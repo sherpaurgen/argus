@@ -153,7 +153,7 @@ func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request
 	}
 	err = app.models.UserModel.Update(usr)
 	if err != nil {
-		app.logger.Printf("data.update: throws error %v", err)
+		app.logError(r, err)
 		app.serverErrorResponse(w, r, err)
 	}
 	err = app.writeJSON(w, http.StatusOK, envelope{"user": "updateduser"}, nil)

@@ -83,23 +83,22 @@ func (sdm SleepDataModel) GetSleepData(child_id string, user_id string, StartSle
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
-	var totalCount int
+	var total_rows int
 	sqlstatement := `SELECT COUNT(*) FROM sleep_patterns 
 	WHERE user_id = $1 
 	  AND child_id = $2 
 	  AND sleep_start >= $3 
 	  AND sleep_end <= $4 ;`
-	err = sdm.DB.QueryRow(sqlstatement, user_id, child_id, StartSleep, EndSleep).Scan(&totalCount)
+	err = sdm.DB.QueryRow(sqlstatement, user_id, child_id, StartSleep, EndSleep).Scan(&total_rows)
 	if err != nil {
 		return nil, err
 	}
 	response := map[string]interface{}{
-		"results":     sleepData,
-		"page":        page,
-		"limit":       limit,
-		"total_count": totalCount,
-		"total_pages": int(math.Ceil(float64(totalCount) / float64(limit))),
+		"results":      sleepData,
+		"current_page": page,
+		"limit":        limit,
+		"total_rows":   total_rows,
+		"total_pages":  int(math.Ceil(float64(total_rows) / float64(limit))),
 	}
 	return response, nil
-
 }

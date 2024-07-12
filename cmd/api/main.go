@@ -12,6 +12,7 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/sherpaurgen/argus/internal/data"
+	"github.com/sherpaurgen/argus/internal/jsonlog"
 )
 
 const version = "1.0.0"
@@ -29,7 +30,7 @@ type config struct {
 
 type application struct {
 	config config
-	logger *log.Logger
+	logger *jsonlog.Logger
 	models data.Models
 }
 
@@ -42,11 +43,13 @@ func main() {
 	flag.IntVar(&cfg.db.maxIdleConns, "db-max-idle-conns", 25, "PostgreSQL max idle connections")
 	flag.IntVar(&cfg.db.maxLifeTime, "db-max-life-time", 10, "PostgreSQL max connection life time")
 	flag.Parse()
+
+	logger := jsonlog.New(os.Stdout, jsonlog.LevelInfo)
 	//initialize logger, the prefix is empty hence its just empty quote ""
-	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
+	//logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 	db, err := OpenDB(cfg)
 	if err != nil {
-		log.Panicf("Error on db connection: %v", err)
+		logger.PrintFatal(err, nil)
 	}
 	defer db.Close()
 
@@ -58,16 +61,17 @@ func main() {
 
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%d", cfg.port),
-		Handler:      app.routes(),
+		Handler:      app.recoverPanic(app.rateLimit(app.routes())),
 		IdleTimeout:  time.Minute,
+		ErrorLog:     log.New(logger, "", 0),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
 
 	// Start the HTTP
-	logger.Printf("starting %s server on %s", cfg.env, srv.Addr)
+	logger.PrintInfo("starting server", map[string]string{"addr": srv.Addr, "env": cfg.env})
 	err = srv.ListenAndServe()
-	logger.Fatal(err)
+	logger.PrintFatal(err, map[string]string{"error": err.Error()})
 
 }
 

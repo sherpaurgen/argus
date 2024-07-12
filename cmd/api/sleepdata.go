@@ -68,6 +68,7 @@ func (app *application) addsleepdataHandler(w http.ResponseWriter, r *http.Reque
 		app.serverErrorResponse(w, r, err)
 	}
 }
+
 func (app *application) getSleepDataHandler(w http.ResponseWriter, r *http.Request) {
 	//input example.com/v1/sleepdata/ch112?start_sleep=2024-06-22T01:20:00Z&end_sleep=2024-06-22T05:20:00Z&limit=5&page=1
 
