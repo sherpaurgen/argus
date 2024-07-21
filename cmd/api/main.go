@@ -5,8 +5,6 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
-	"log"
-	"net/http"
 	"os"
 	"time"
 
@@ -68,19 +66,12 @@ func main() {
 		models: data.NewModels(db),
 	}
 
-	srv := &http.Server{
-		Addr:         fmt.Sprintf(":%d", cfg.port),
-		Handler:      app.recoverPanic(app.rateLimit(app.routes())),
-		IdleTimeout:  time.Minute,
-		ErrorLog:     log.New(logger, "", 0),
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 30 * time.Second,
-	}
-
 	// Start the HTTP
-	logger.PrintInfo("starting server", map[string]string{"addr": srv.Addr, "env": cfg.env})
-	err = srv.ListenAndServe()
-	logger.PrintFatal(err, map[string]string{"error": err.Error()})
+
+	err = app.serve()
+	if err != nil {
+		logger.PrintFatal(err, nil)
+	}
 
 }
 
