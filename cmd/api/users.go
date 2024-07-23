@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/sherpaurgen/argus/internal/validator"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/sherpaurgen/argus/internal/data"
 )
@@ -40,13 +41,18 @@ func (app *application) createUserHandler(w http.ResponseWriter, r *http.Request
 	if !v.Valid() {
 		app.failedValidationResponse(w, r, v.Errors)
 	}
+
+	pwhash, err := HashPassword(input.PasswordHash)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
 	usr := &data.Users{
 		UserID:       input.UserID,
 		UserGroup:    input.UserGroup,
 		Email:        input.Email,
 		FirstName:    input.FirstName,
 		LastName:     input.LastName,
-		PasswordHash: input.PasswordHash,
+		PasswordHash: pwhash,
 		CreatedAt:    input.CreatedAt,
 		UpdatedAt:    input.CreatedAt,
 		LastLogin:    input.LastLogin,
@@ -160,4 +166,16 @@ func (app *application) updateUserHandler(w http.ResponseWriter, r *http.Request
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
+}
+
+func HashPassword(password string) (string, error) {
+	dat, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+	return string(dat), nil
+}
+
+func CheckPasswordHash(password, hash string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }
